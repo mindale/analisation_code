@@ -1,5 +1,6 @@
 import re
-
+#не рассматривать в качестве регулярных выражений -> рассматривать в качестве состояний
+#В качетсве регулярных выражений можно проверять состояния буферов и тп
 # Список ключевых слов
 KEYWORDS = {
     'begin': 'BEGIN',
@@ -9,14 +10,17 @@ KEYWORDS = {
     'while': 'WHILE',
     'next': 'NEXT',
     'readln': 'READLN',
-    'writeln': 'WRITELN'
+    'writeln': 'WRITELN',
+    'to':'TO',
+    'step':'STEP'
 }
 
 token_specification = [
     # Операторы:
-    ('NEQ', r'≠'),
+    ('NEQ', r'!='),
+    # ('EQ', r'=='),
+    # ('EQ1', r'='),
     ('EQ', r'=='),
-    ('EQ1', r'='),
     ('LE', r'≤'),
     ('GE', r'≥'),
     ('LT', r'<'),
