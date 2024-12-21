@@ -39,7 +39,10 @@ token_specification = [
     # Восьмеричное: [0-7]+[Oo]
     # Десятичное: \d+[Dd]?
     # Шестнадцатеричное: [0-9A-Fa-f]+[Hh]
-    ('NUMBER',    r'[01]+[Bb]|[0-7]+[Oo]|\d+[Dd]?|[0-9A-Fa-f]+[Hh]'),
+    ('NUMBER2',    r'[01]+[Bb]'),
+    ('NUMBER8', r'[0-7]+[Oo]'),
+    ('NUMBER16', r'[0-9A-Fa-f]+[Hh]'),
+    ('NUMBER10', r'\d+[Dd]?'),
 
     # Идентификаторы:
     ('ID',        r'[A-Za-z_][A-Za-z0-9_]*'),
@@ -69,56 +72,48 @@ def tokenize(code):
 
 
 
-        elif kind == 'NUMBER':
-
+        elif kind == 'NUMBER2':
             num_str = value
+            digits = num_str[:-1]
+            # last_char = num_str[-1]
+            # Двоичное
 
-            last_char = num_str[-1]
 
-            if last_char in ('B', 'b'):
+            if not all(ch in '01' for ch in digits):
+                raise RuntimeError(f'Недопустимый символ в двоичном числе {value!r} на строке {line_num}')
 
-                # Двоичное
+        elif kind == 'NUMBER8':
+            # Восьмеричное
+            num_str = value
+            digits = num_str[:-1]
+            if not all(ch in '01234567' for ch in digits):
+                raise RuntimeError(f'Недопустимый символ в восьмеричном числе {value!r} на строке {line_num}')
 
-                digits = num_str[:-1]
+        elif kind in "NUMBER10":
+            # Десятичное с суффиксом
+            num_str = value
+            digits = num_str[:-1]
 
-                if not all(ch in '01' for ch in digits):
-                    raise RuntimeError(f'Недопустимый символ в двоичном числе {value!r} на строке {line_num}')
+            if not all(ch.isdigit() for ch in digits):
+                raise RuntimeError(f'Недопустимый символ в десятичном числе {value!r} на строке {line_num}')
 
-            elif last_char in ('O', 'o'):
+            # elif last_char in dict_16:
+        elif kind in "NUMBER16":
+            # Шестнадцатеричное
+            num_str = value
+            digits = num_str[:-1]
 
-                # Восьмеричное
+            if not all(ch in '0123456789ABCDEFabcdef' for ch in digits):
+                raise RuntimeError(f'Недопустимый символ в шестнадцатеричном числе {value!r} на строке {line_num}')
 
-                digits = num_str[:-1]
-
-                if not all(ch in '01234567' for ch in digits):
-                    raise RuntimeError(f'Недопустимый символ в восьмеричном числе {value!r} на строке {line_num}')
-
-            elif last_char in ('D', 'd'):
-
-                # Десятичное с суффиксом
-
-                digits = num_str[:-1]
-
-                if not all(ch.isdigit() for ch in digits):
-                    raise RuntimeError(f'Недопустимый символ в десятичном числе {value!r} на строке {line_num}')
-
-            elif last_char in ('H', 'h'):
-
-                # Шестнадцатеричное
-
-                digits = num_str[:-1]
-
-                if not all(ch in '0123456789ABCDEFabcdef' for ch in digits):
-                    raise RuntimeError(f'Недопустимый символ в шестнадцатеричном числе {value!r} на строке {line_num}')
-
-            else:
-
-                # Десятичное без суффикса
-
-                digits = num_str
-
-                if not all(ch.isdigit() for ch in digits):
-                    raise RuntimeError(f'Недопустимый символ в десятичном числе {value!r} на строке {line_num}')
+            # else:
+            #
+            #     # Десятичное без суффикса
+            #
+            #     digits = num_str
+            #
+            #     if not all(ch.isdigit() for ch in digits):
+            #         raise RuntimeError(f'Недопустимый символ в десятичном числе {value!r} на строке {line_num}')
 
         elif kind == 'ID':
             # Проверяем, не является ли идентификатор ключевым словом
