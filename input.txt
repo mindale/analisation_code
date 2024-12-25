@@ -6,6 +6,6 @@ for k to b;
 n != x
     step d begin 72 >= 34;
     (*commentaries*)
-    writeln(a);
+    writeln;
 
 end;
