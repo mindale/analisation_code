@@ -1,0 +1,7 @@
+if a + b == c next;
+for k to b;
+    step d begin 72 >= 34;
+    (*commentaries*)
+    writeln(a);
+
+end;
