@@ -2,6 +2,12 @@ import re
 #не рассматривать в качестве регулярных выражений -> рассматривать в качестве состояний
 #В качетсве регулярных выражений можно проверять состояния буферов и тп
 # Список ключевых слов
+
+
+
+
+
+
 KEYWORDS = {
     'begin': 'BEGIN',
     'if': 'IF',
@@ -18,11 +24,9 @@ KEYWORDS = {
 token_specification = [
     # Операторы:
     ('NEQ', r'!='),
-    # ('EQ', r'=='),
-    # ('EQ1', r'='),
     ('EQ', r'=='),
-    ('LE', r'≤'),
-    ('GE', r'≥'),
+    ('LE', r'>='),
+    ('GE', r'>='),
     ('LT', r'<'),
     ('GT', r'>'),
     ('PLUS', r'\+'),
@@ -32,6 +36,7 @@ token_specification = [
     ('DIV', r'/'),
     ('AND', r'&&'),
     ('NOT', r'!'),
+    ('OST', r'%'),
 
     # Литералы:
     ('NUMBER', r'\d+(\.\d+)?'),  # Число (целое или с плавающей точкой)
@@ -39,6 +44,8 @@ token_specification = [
 
     # Прочие токены:
     ('NEWLINE', r'\n'),
+    ('COMMENT',    r'\(\*.*?\*\)'),
+    ('DELIM', r';'),
     ('SKIP', r'[ \t\r]+'),  # Пробелы, табы, возвраты каретки
 
     # Для наихудшего случая - любой неподходящий символ
@@ -90,8 +97,7 @@ f = open("input.txt").readlines()
 code = ""
 for i in range(len(f)):
     code+=str(f[i])
-# print(code)
-fe = open("output_lexer.txt", "w")
+fe = open("output.txt", "w")
 try:
     for token in tokenize(code):
         print(token)
